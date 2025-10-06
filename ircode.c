@@ -2,6 +2,10 @@
  * IRCODE.C - Intermediate Representation Code Implementation
  * CST-405 Compiler Project
  *
+ * Authors: Christian Nshuti Manzi & Aime Serge Tuyishime
+ * Course: CST-405 Compiler Design
+ * Project: Complete Compiler Implementation
+ *
  * This file implements the Three-Address Code (TAC) generator.
  * TAC is an intermediate representation between the high-level source
  * and low-level assembly code.

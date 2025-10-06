@@ -1,0 +1,266 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║          VIDEO RECORDING - COMPLETE PACKAGE READY             ║
+║                                                               ║
+║         CST-405 Complete Compiler Demonstration              ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+AUTHORS: Christian Nshuti Manzi & Aime Serge Tuyishime
+
+═══════════════════════════════════════════════════════════════
+
+✅ DOCUMENTATION CREATED FOR VIDEO RECORDING
+
+You now have THREE comprehensive guides:
+
+1. VIDEO_RECORDING_GUIDE.md (FULL DETAILED SCRIPT)
+   - Complete 15-minute walkthrough
+   - What to say word-for-word
+   - What to show on screen
+   - Detailed explanations for each part
+
+2. VIDEO_QUICK_REFERENCE.md (QUICK CHEAT SHEET)
+   - One-page summary
+   - Key commands to run
+   - Time allocations
+   - Must-cover checklist
+
+3. VIDEO_VISUAL_AIDS.txt (DIAGRAMS TO SHOW)
+   - 8 ready-to-use diagrams
+   - Copy-paste into terminal
+   - Visual representations of concepts
+   - Transformation flowcharts
+
+═══════════════════════════════════════════════════════════════
+
+📋 VIDEO REQUIREMENTS COVERAGE
+
+Requirement                          Coverage
+────────────────────────────────────────────────────────────
+a) Explain how code works           ✅ Part 2 (3-4 min)
+b) Individual tasks completed       ✅ Part 3 (2-3 min)
+c) AST → IR → Assembly process      ✅ Part 4 (3-4 min) ⭐
+d) Demonstrate execution            ✅ Part 5 (2-3 min)
+
+═══════════════════════════════════════════════════════════════
+
+🎯 MOST IMPORTANT SECTION
+
+Part 4: AST → TAC → Assembly (3-4 minutes)
+
+This is where you show the transformation:
+
+  SOURCE CODE
+      ↓
+  ABSTRACT SYNTAX TREE
+      ↓
+  THREE-ADDRESS CODE
+      ↓
+  x86-64 ASSEMBLY
+
+Use this example:
+  while (counter < limit) { print(counter); }
+
+Show:
+1. The source code
+2. The AST structure (WHILE node)
+3. The TAC instructions (L0, RELOP, IF_FALSE, GOTO)
+4. The assembly code (mov, cmp, setl, je, jmp)
+
+Explain HOW each transformation happens!
+
+═══════════════════════════════════════════════════════════════
+
+🎬 RECORDING CHECKLIST
+
+Before Recording:
+  ☐ Read VIDEO_RECORDING_GUIDE.md
+  ☐ Review VIDEO_QUICK_REFERENCE.md
+  ☐ Print/open VIDEO_VISUAL_AIDS.txt
+  ☐ Test all demo commands
+  ☐ Clean build: make clean && make
+  ☐ Large terminal font (16-18pt)
+  ☐ High contrast color scheme
+  ☐ Test microphone
+  ☐ Clear screen: clear
+
+During Recording:
+  ☐ Introduce yourself and authors
+  ☐ Show all 6 compiler phases
+  ☐ Explain individual contributions
+  ☐ DETAILED AST → TAC → Assembly
+  ☐ Live build demonstration
+  ☐ Live compilation demonstration
+  ☐ Show generated assembly
+  ☐ Summarize achievements
+
+After Recording:
+  ☐ Check audio quality
+  ☐ Verify all 4 requirements covered
+  ☐ Confirm time is 10-15 minutes
+  ☐ Review for clarity
+
+═══════════════════════════════════════════════════════════════
+
+💻 QUICK DEMO COMMANDS
+
+# Introduction
+ls -la
+ls *.c *.h *.l *.y
+
+# Code Explanation
+head -60 scanner.l
+grep -A 10 "while_stmt:" parser.y
+cat ast.h | grep "typedef enum"
+
+# Individual Tasks
+grep '"while"' scanner.l
+grep -A 30 "case NODE_WHILE:" ircode.c
+
+# AST → Code Process (MOST IMPORTANT!)
+cat test_while.src
+./compiler test_while.src 2>&1 | grep -A 30 "ABSTRACT SYNTAX TREE"
+./compiler test_while.src 2>&1 | grep -A 20 "THREE-ADDRESS CODE"
+cat output.asm | grep -A 30 "L0:"
+
+# Live Demo
+make clean && make
+./compiler test_basic.src
+./compiler test_while.src
+cat output.asm
+
+═══════════════════════════════════════════════════════════════
+
+🎤 OPENING SCRIPT (Copy This)
+
+"Hello, my name is [Your Name].
+
+Today I'm demonstrating the CST-405 Complete Compiler Project,
+developed by Christian Nshuti Manzi and Aime Serge Tuyishime.
+
+This is a fully functional compiler that implements all six
+phases of compilation:
+  1. Lexical Analysis
+  2. Syntax Analysis
+  3. Semantic Analysis
+  4. Intermediate Code Generation
+  5. Assembly Code Generation
+
+We added while loops with relational operators as our significant
+feature, which required modifications in every single phase.
+
+Let me show you how it works..."
+
+═══════════════════════════════════════════════════════════════
+
+🎤 CLOSING SCRIPT (Copy This)
+
+"To summarize:
+
+We successfully built a complete compiler with all six phases:
+✓ Lexer with 17 token types including our new while keyword
+✓ Parser with complete grammar including while loops
+✓ Semantic analysis with type checking
+✓ IR code generation using Three-Address Code
+✓ Assembly code generation for x86-64
+
+Our significant feature - while loops - touches every phase:
+✓ 8 new tokens in the lexer
+✓ 2 new grammar rules in the parser
+✓ 2 new AST node types
+✓ Control flow with labels and jumps in TAC
+✓ Comparison and jump instructions in assembly
+
+The compiler successfully compiles programs and generates
+working x86-64 assembly code.
+
+This project demonstrates complete mastery of compiler
+construction from lexical analysis through code generation.
+
+Thank you for watching!"
+
+═══════════════════════════════════════════════════════════════
+
+⏱️ TIME ALLOCATION
+
+Section                          Time        Priority
+──────────────────────────────────────────────────────
+Introduction                     1-2 min     Medium
+Code Explanation                 3-4 min     High
+Individual Tasks                 2-3 min     High
+AST → TAC → Assembly            3-4 min     CRITICAL ⭐
+Live Demonstration              2-3 min     High
+Conclusion                       1 min       Medium
+──────────────────────────────────────────────────────
+TOTAL                           12-17 min
+
+═══════════════════════════════════════════════════════════════
+
+💡 PRO TIPS
+
+1. Rehearse once before recording
+2. Speak 20% slower than normal
+3. Use "Notice how..." and "Watch this..."
+4. Point to specific code lines
+5. Show output at each phase
+6. Pause between major sections
+7. If you make a mistake, just continue!
+8. Emphasize YOUR significant feature
+9. Show transformation step-by-step
+10. End with a clear summary
+
+═══════════════════════════════════════════════════════════════
+
+🎯 SUCCESS CRITERIA
+
+Your video is successful if viewers can answer:
+
+✓ What are the 6 phases of compilation?
+✓ What did each team member implement?
+✓ How does an AST become TAC become assembly?
+✓ What is your significant feature?
+✓ Does the compiler actually work?
+
+═══════════════════════════════════════════════════════════════
+
+📁 FILES TO HAVE READY
+
+Terminal Commands:
+  - Have VIDEO_QUICK_REFERENCE.md open
+  - Have commands copied for easy paste
+
+Text Editor (for showing code):
+  - scanner.l
+  - parser.y
+  - ircode.c
+  - codegen.c
+
+Test Files:
+  - test_basic.src
+  - test_while.src
+
+Output:
+  - output.asm (will be generated)
+
+═══════════════════════════════════════════════════════════════
+
+🚀 YOU'RE READY!
+
+You have:
+✅ Complete, working compiler
+✅ All phases implemented
+✅ Significant feature (while loops)
+✅ Comprehensive documentation
+✅ Detailed recording guides
+✅ Visual aids and diagrams
+✅ Demo commands ready
+✅ Scripts for intro/conclusion
+
+Your compiler is excellent - just explain it clearly!
+
+═══════════════════════════════════════════════════════════════
+
+GOOD LUCK WITH YOUR VIDEO RECORDING! 🎥🚀
+
+═══════════════════════════════════════════════════════════════

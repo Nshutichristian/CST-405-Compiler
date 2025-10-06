@@ -2,6 +2,10 @@
  * IRCODE.H - Intermediate Representation Code Header
  * CST-405 Compiler Project
  *
+ * Authors: Christian Nshuti Manzi & Aime Serge Tuyishime
+ * Course: CST-405 Compiler Design
+ * Project: Complete Compiler Implementation
+ *
  * This file defines the Three-Address Code (TAC) intermediate representation.
  * TAC is a linearized, low-level representation of the program that's easy
  * to translate into assembly code.

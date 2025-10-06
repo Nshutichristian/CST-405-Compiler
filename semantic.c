@@ -2,6 +2,10 @@
  * SEMANTIC.C - Semantic Analyzer Implementation
  * CST-405 Compiler Project
  *
+ * Authors: Christian Nshuti Manzi & Aime Serge Tuyishime
+ * Course: CST-405 Compiler Design
+ * Project: Complete Compiler Implementation
+ *
  * This file implements semantic analysis including type checking,
  * variable declaration checking, and use-before-initialization detection.
  */

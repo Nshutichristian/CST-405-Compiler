@@ -1,0 +1,90 @@
+// CST-405 Compiler - Comprehensive Test Program
+// Tests ALL features of the complete compiler
+//
+// MINIMAL LANGUAGE FEATURES (Base):
+//   - Variable declarations (int)
+//   - Assignment statements
+//   - Print statements
+//   - Integer literals
+//   - Addition expressions
+//   - Identifiers
+//
+// NEW SIGNIFICANT FEATURE (While Loops):
+//   - While loops with conditions
+//   - Relational operators (<, >, <=, >=, ==, !=)
+//   - Loop body with multiple statements
+//   - Nested expressions in loops
+//
+// This test demonstrates handling in ALL compiler phases:
+//   1. LEXER: Recognizes while, relational ops, braces
+//   2. PARSER: Parses while_stmt grammar rule
+//   3. SEMANTIC: Checks conditions and loop bodies
+//   4. IR CODE: Generates labels and conditional jumps
+//   5. CODE GEN: Emits assembly for loops and comparisons
+
+// Test 1: Basic declarations and assignments
+int x;
+int y;
+int z;
+
+x = 10;
+y = 20;
+z = x + y;
+print(z);
+
+// Test 2: While loop with less-than operator
+int counter;
+counter = 0;
+
+while (counter < 5) {
+    print(counter);
+    counter = counter + 1;
+}
+
+// Test 3: While loop with greater-than operator
+int countdown;
+countdown = 10;
+
+while (countdown > 5) {
+    print(countdown);
+    countdown = countdown + 1;
+}
+
+// Test 4: Complex expressions in loop
+int a;
+int b;
+int sum;
+
+a = 1;
+b = 1;
+sum = 0;
+
+while (a < 10) {
+    sum = sum + a;
+    a = a + b;
+    print(sum);
+}
+
+// Test 5: Multiple relational operators
+int test;
+test = 7;
+
+while (test != 10) {
+    print(test);
+    test = test + 1;
+}
+
+// Test 6: Nested arithmetic in loops
+int n;
+int result;
+
+n = 0;
+result = 0;
+
+while (n < 5) {
+    result = result + n + n;
+    n = n + 1;
+    print(result);
+}
+
+print(result);

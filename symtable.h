@@ -2,6 +2,10 @@
  * SYMTABLE.H - Symbol Table Header
  * CST-405 Compiler Project
  *
+ * Authors: Christian Nshuti Manzi & Aime Serge Tuyishime
+ * Course: CST-405 Compiler Design
+ * Project: Complete Compiler Implementation
+ *
  * This file defines the symbol table structure used for tracking
  * variables, their types, and scope information during compilation.
  * Essential for semantic analysis and type checking.

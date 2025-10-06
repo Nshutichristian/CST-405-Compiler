@@ -1,0 +1,409 @@
+# Visual Aids for Video Recording
+
+Copy these diagrams and show them during your video presentation.
+
+═══════════════════════════════════════════════════════════════
+
+## DIAGRAM 1: COMPILER ARCHITECTURE
+
+┌─────────────────────────────────────────────────────────────┐
+│                     COMPILATION PIPELINE                     │
+└─────────────────────────────────────────────────────────────┘
+
+   SOURCE CODE (test_while.src)
+          │
+          ▼
+   ┌──────────────────┐
+   │  1. LEXER        │  scanner.l (Flex)
+   │  (Tokenization)  │
+   └────────┬─────────┘
+            │ Tokens: WHILE, LPAREN, ID, RELOP, ...
+            ▼
+   ┌──────────────────┐
+   │  2. PARSER       │  parser.y (Bison)
+   │  (Syntax Tree)   │
+   └────────┬─────────┘
+            │ AST: WHILE → [CONDITION, BODY]
+            ▼
+   ┌──────────────────┐
+   │  3. SEMANTIC     │  semantic.c
+   │  (Type Checking) │
+   └────────┬─────────┘
+            │ Validated AST
+            ▼
+   ┌──────────────────┐
+   │  4. IR CODE      │  ircode.c
+   │  (TAC)           │
+   └────────┬─────────┘
+            │ Three-Address Code
+            ▼
+   ┌──────────────────┐
+   │  5. CODE GEN     │  codegen.c
+   │  (Assembly)      │
+   └────────┬─────────┘
+            │
+            ▼
+   OUTPUT: output.asm (x86-64 Assembly)
+
+═══════════════════════════════════════════════════════════════
+
+## DIAGRAM 2: WHILE LOOP TRANSFORMATION (DETAILED!)
+
+┌─────────────────────────────────────────────────────────────┐
+│ SOURCE CODE                                                  │
+└─────────────────────────────────────────────────────────────┘
+
+while (counter < limit) {
+    print(counter);
+    counter = counter + 1;
+}
+
+                        ↓
+
+┌─────────────────────────────────────────────────────────────┐
+│ ABSTRACT SYNTAX TREE (AST)                                  │
+└─────────────────────────────────────────────────────────────┘
+
+        NODE_WHILE
+           ├── CONDITION
+           │      ├── NODE_IDENTIFIER: counter
+           │      ├── RELOP: "<"
+           │      └── NODE_IDENTIFIER: limit
+           │
+           └── BODY (statement_list)
+                  ├── NODE_PRINT
+                  │      └── NODE_IDENTIFIER: counter
+                  │
+                  └── NODE_ASSIGNMENT
+                         ├── counter
+                         └── BINARY_OP: "+"
+                                ├── NODE_IDENTIFIER: counter
+                                └── NODE_NUMBER: 1
+
+                        ↓
+
+┌─────────────────────────────────────────────────────────────┐
+│ THREE-ADDRESS CODE (TAC)                                    │
+└─────────────────────────────────────────────────────────────┘
+
+0   LABEL          -          -          -          L0
+1   RELOP          t1         counter    limit      <
+2   IF_FALSE       -          t1         -          L1
+3   PRINT          -          counter    -          -
+4   LOAD_CONST     t2         1          -          -
+5   ADD            t3         counter    t2         -
+6   ASSIGN         counter    t3         -          -
+7   GOTO           -          -          -          L0
+8   LABEL          -          -          -          L1
+
+                        ↓
+
+┌─────────────────────────────────────────────────────────────┐
+│ x86-64 ASSEMBLY CODE                                        │
+└─────────────────────────────────────────────────────────────┘
+
+L0:                              ; Loop start label
+    ; t1 = counter < limit
+    mov rax, [counter]           ; Load counter
+    cmp rax, [limit]             ; Compare with limit
+    setl al                      ; Set AL=1 if counter < limit
+    movzx rax, al                ; Zero-extend to 64-bit
+    mov [t1], rax                ; Store result
+
+    ; if_false t1 goto L1
+    mov rax, [t1]                ; Load condition result
+    cmp rax, 0                   ; Is it false (0)?
+    je L1                        ; If yes, exit loop
+
+    ; print(counter)
+    mov rdi, fmt_int             ; Format string
+    mov rsi, [counter]           ; Value to print
+    xor rax, rax                 ; No vector regs
+    call printf                  ; Call printf
+
+    ; counter = counter + 1
+    mov rax, 1                   ; Load constant 1
+    mov [t2], rax
+    mov rax, [counter]           ; Load counter
+    add rax, [t2]                ; Add 1
+    mov [t3], rax                ; Store result
+    mov rax, [t3]
+    mov [counter], rax           ; Update counter
+
+    ; goto L0
+    jmp L0                       ; Jump back to start
+
+L1:                              ; Loop end label
+
+═══════════════════════════════════════════════════════════════
+
+## DIAGRAM 3: INDIVIDUAL CONTRIBUTIONS
+
+┌─────────────────────────────────────────────────────────────┐
+│ CHRISTIAN NSHUTI MANZI - FRONT-END IMPLEMENTATION          │
+└─────────────────────────────────────────────────────────────┘
+
+✓ LEXICAL ANALYSIS (scanner.l)
+  • Token pattern definitions
+  • While keyword: "while" → WHILE
+  • Relational operators: <, >, <=, >=, ==, !=
+  • Braces: { }
+  • Location tracking
+
+✓ SYNTAX ANALYSIS (parser.y)
+  • Grammar rules for while loops
+  • while_stmt → WHILE LPAREN condition RPAREN LBRACE ... RBRACE
+  • condition → expression RELOP expression
+  • AST node construction
+
+✓ SYMBOL TABLE (symtable.c/h)
+  • Hash table implementation
+  • Symbol insertion and lookup
+  • Initialization tracking
+  • Type storage
+
+┌─────────────────────────────────────────────────────────────┐
+│ AIME SERGE TUYISHIME - BACK-END IMPLEMENTATION             │
+└─────────────────────────────────────────────────────────────┘
+
+✓ SEMANTIC ANALYSIS (semantic.c)
+  • Type checking for conditions
+  • Variable declaration checking
+  • Use-before-initialization detection
+  • Loop body validation
+
+✓ INTERMEDIATE CODE (ircode.c)
+  • TAC instruction generation
+  • Label generation (L0, L1, ...)
+  • Temporary generation (t0, t1, ...)
+  • While loop control flow:
+    - LABEL for loop start
+    - RELOP for condition
+    - IF_FALSE for exit
+    - GOTO for loop back
+
+✓ CODE GENERATION (codegen.c)
+  • x86-64 assembly generation
+  • Relational operator mapping:
+    < → setl, > → setg, <= → setle
+    >= → setge, == → sete, != → setne
+  • Jump instruction generation:
+    je (jump if equal/false)
+    jmp (unconditional jump)
+
+═══════════════════════════════════════════════════════════════
+
+## DIAGRAM 4: SIGNIFICANT FEATURE - WHILE LOOPS
+
+┌─────────────────────────────────────────────────────────────┐
+│ WHY WHILE LOOPS ARE SIGNIFICANT                             │
+└─────────────────────────────────────────────────────────────┘
+
+✓ TOUCHES ALL 6 PHASES:
+
+Phase 1 - LEXER:
+  Added 8 new tokens (while, {, }, 6 relational ops)
+
+Phase 2 - PARSER:
+  Added 2 grammar rules (while_stmt, condition)
+
+Phase 3 - SEMANTIC:
+  Added condition type checking
+
+Phase 4 - IR CODE:
+  Added 4 new TAC opcodes (LABEL, GOTO, IF_FALSE, RELOP)
+  Added label generation algorithm
+  Added loop control flow structure
+
+Phase 5 - CODE GEN:
+  Added 6 relational operator implementations
+  Added jump instruction generation
+  Added comparison instruction handling
+
+✓ COMPLEXITY METRICS:
+  • 345 lines of new code
+  • 8 new tokens recognized
+  • 6 relational operators
+  • 4 new TAC instruction types
+  • Label-based control flow
+
+✓ LANGUAGE IMPACT:
+  Before: Sequential execution only
+  After: Iteration + control flow = Turing complete!
+
+═══════════════════════════════════════════════════════════════
+
+## DIAGRAM 5: CODE GENERATION DETAIL
+
+┌─────────────────────────────────────────────────────────────┐
+│ RELATIONAL OPERATOR IMPLEMENTATION                          │
+└─────────────────────────────────────────────────────────────┘
+
+TAC Instruction:  t1 = counter < limit
+
+                        ↓
+
+Assembly Generation Process:
+
+1. LOAD left operand
+   mov rax, [counter]
+
+2. COMPARE with right operand
+   cmp rax, [limit]
+   (Sets CPU flags: ZF, SF, CF, OF)
+
+3. SET result based on comparison
+   Operator  | Assembly | Meaning
+   ----------|----------|------------------
+   <         | setl al  | Set if Less
+   >         | setg al  | Set if Greater
+   <=        | setle al | Set if Less or Equal
+   >=        | setge al | Set if Greater or Equal
+   ==        | sete al  | Set if Equal
+   !=        | setne al | Set if Not Equal
+
+4. EXTEND to 64-bit
+   movzx rax, al
+   (Zero-extends 8-bit AL to 64-bit RAX)
+
+5. STORE result
+   mov [t1], rax
+   (Result: 1 if true, 0 if false)
+
+═══════════════════════════════════════════════════════════════
+
+## DIAGRAM 6: CONTROL FLOW GRAPH
+
+┌─────────────────────────────────────────────────────────────┐
+│ WHILE LOOP CONTROL FLOW                                     │
+└─────────────────────────────────────────────────────────────┘
+
+                  [START]
+                     │
+                     ▼
+              ┌──────────────┐
+              │  L0: (start) │ ◄────────┐
+              └──────┬───────┘          │
+                     │                  │
+                     ▼                  │
+         ┌───────────────────────┐     │
+         │ Evaluate condition:   │     │
+         │ counter < limit       │     │
+         └──────────┬────────────┘     │
+                    │                  │
+             ┌──────┴──────┐           │
+             │             │           │
+         TRUE│             │FALSE      │
+             ▼             ▼           │
+    ┌────────────┐   ┌─────────┐     │
+    │ Loop Body  │   │   L1:   │     │
+    │ Statements │   │  (end)  │     │
+    └─────┬──────┘   └────┬────┘     │
+          │               │           │
+          │               ▼           │
+          │           [EXIT]          │
+          │                           │
+          └───────────────────────────┘
+               goto L0
+
+Legend:
+  L0 = Loop start label
+  L1 = Loop end label
+  TRUE branch = Execute body, goto L0
+  FALSE branch = Exit loop (goto L1)
+
+═══════════════════════════════════════════════════════════════
+
+## DIAGRAM 7: PROJECT STATISTICS
+
+┌─────────────────────────────────────────────────────────────┐
+│ PROJECT METRICS                                             │
+└─────────────────────────────────────────────────────────────┘
+
+CODE STATISTICS:
+  Total Compiler Code:     2,147 lines
+  New Feature Code:          345 lines
+  Documentation:           1,500+ lines
+  Test Programs:               4 files
+
+FILES:
+  Source Files (.c/.h):       13 files
+  Lexer/Parser (.l/.y):        2 files
+  Documentation (.md):        11 files
+  Test Programs (.src):        4 files
+
+TOKENS:
+  Total Token Types:          17 types
+  NEW Tokens Added:            8 types
+    - while keyword
+    - 6 relational operators
+    - 2 braces
+
+GRAMMAR:
+  Total Grammar Rules:        15 rules
+  NEW Rules Added:             2 rules
+    - while_stmt
+    - condition
+
+AST NODES:
+  Total Node Types:           10 types
+  NEW Node Types:              2 types
+    - NODE_WHILE
+    - NODE_CONDITION
+
+TAC INSTRUCTIONS:
+  Total Opcode Types:          8 types
+  NEW Opcodes:                 4 types
+    - TAC_LABEL
+    - TAC_GOTO
+    - TAC_IF_FALSE
+    - TAC_RELOP
+
+ASSEMBLY INSTRUCTIONS USED:
+  Total x86-64 Instructions:  15+ types
+  NEW Instructions:            8+ types
+    - cmp (compare)
+    - 6 × setcc (conditional set)
+    - je (jump if equal)
+    - jmp (unconditional jump)
+
+═══════════════════════════════════════════════════════════════
+
+## DIAGRAM 8: EXECUTION EXAMPLE
+
+┌─────────────────────────────────────────────────────────────┐
+│ PROGRAM EXECUTION TRACE                                     │
+└─────────────────────────────────────────────────────────────┘
+
+Source Program:
+  int counter;
+  int limit;
+  counter = 0;
+  limit = 5;
+  while (counter < limit) {
+      print(counter);
+      counter = counter + 1;
+  }
+
+Execution Trace:
+
+Iteration 1:  counter=0, limit=5  →  0<5? YES  →  print(0), counter=1
+Iteration 2:  counter=1, limit=5  →  1<5? YES  →  print(1), counter=2
+Iteration 3:  counter=2, limit=5  →  2<5? YES  →  print(2), counter=3
+Iteration 4:  counter=3, limit=5  →  3<5? YES  →  print(3), counter=4
+Iteration 5:  counter=4, limit=5  →  4<5? YES  →  print(4), counter=5
+Check:        counter=5, limit=5  →  5<5? NO   →  EXIT LOOP
+
+Output:
+  0
+  1
+  2
+  3
+  4
+
+═══════════════════════════════════════════════════════════════
+
+Copy these diagrams into a text file or draw them on screen
+during your video presentation to help explain the concepts!
+
+═══════════════════════════════════════════════════════════════

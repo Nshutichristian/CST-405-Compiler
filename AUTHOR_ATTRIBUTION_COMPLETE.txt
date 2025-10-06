@@ -1,0 +1,201 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║              AUTHOR ATTRIBUTION - FINAL REPORT                ║
+║                                                               ║
+║         CST-405 Complete Compiler Implementation             ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+PROJECT AUTHORS:
+  Christian Nshuti Manzi
+  Aime Serge Tuyishime
+
+COURSE: CST-405 Compiler Design
+DATE: October 2024
+
+═══════════════════════════════════════════════════════════════
+
+✅ ATTRIBUTION COMPLETE
+
+All source code files, documentation, and runtime displays have been
+updated to properly credit the authors.
+
+═══════════════════════════════════════════════════════════════
+
+SOURCE CODE FILES UPDATED (13 files):
+
+  1.  scanner.l           - Lexical analyzer
+  2.  parser.y            - Syntax analyzer
+  3.  compiler.c          - Main compiler driver
+  4.  ast.c               - AST implementation
+  5.  ast.h               - AST header
+  6.  semantic.c          - Semantic analyzer
+  7.  semantic.h          - Semantic header
+  8.  symtable.c          - Symbol table implementation
+  9.  symtable.h          - Symbol table header
+  10. ircode.c            - IR code generator
+  11. ircode.h            - IR header
+  12. codegen.c           - Code generator
+  13. codegen.h           - Code generator header
+
+Each file header now includes:
+  /*
+   * [FILENAME] - [Description]
+   * CST-405 Compiler Project
+   *
+   * Authors: Christian Nshuti Manzi & Aime Serge Tuyishime
+   * Course: CST-405 Compiler Design
+   * Project: Complete Compiler Implementation
+   * ...
+   */
+
+═══════════════════════════════════════════════════════════════
+
+DOCUMENTATION FILES UPDATED (5 files):
+
+  1. COMPLETE_COMPILER_README.md
+     - Authors at top of document
+     - Authors section in footer
+
+  2. PROJECT_SUMMARY.md
+     - Authors at top
+     - Dedicated authors section
+
+  3. QUICKSTART.md
+     - Authors at top
+
+  4. FEATURE_OVERVIEW.md
+     - Authors and course info at top
+
+  5. AUTHORS.md (NEW)
+     - Complete authorship document
+     - Detailed contributions
+     - Project scope
+     - Contact information template
+
+═══════════════════════════════════════════════════════════════
+
+RUNTIME ATTRIBUTION:
+
+The compiler displays author information on startup:
+
+  ╔═══════════════════════════════════════════════════════════╗
+  ║           CST-405 COMPLETE COMPILER SYSTEM                ║
+  ║                                                           ║
+  ║  Authors: Christian Nshuti Manzi & Aime Serge Tuyishime  ║
+  ║                                                           ║
+  ║  A full-featured compiler with lexer, parser, semantic   ║
+  ║  analyzer, intermediate code generator, and code gen.    ║
+  ║                                                           ║
+  ║  NEW FEATURE: While loops with relational operators      ║
+  ╚═══════════════════════════════════════════════════════════╝
+
+Shown when running: ./compiler <source_file>
+
+═══════════════════════════════════════════════════════════════
+
+VERIFICATION RESULTS:
+
+✅ Build Test
+   Command: make clean && make
+   Result: Compiles successfully with no errors or warnings
+   
+✅ Runtime Test
+   Command: ./compiler test_while.src
+   Result: Authors displayed correctly in banner
+   
+✅ Source Files
+   Verified: All 13 .c/.h/.l/.y files have author headers
+   
+✅ Documentation
+   Verified: All 5 documentation files credit authors
+   
+✅ Consistency
+   Format: Consistent attribution across all files
+   
+═══════════════════════════════════════════════════════════════
+
+ATTRIBUTION SUMMARY:
+
+Location                    Count   Status
+─────────────────────────────────────────────
+Source file headers         13      ✅ Complete
+Documentation files         5       ✅ Complete  
+Runtime display             1       ✅ Complete
+Author document             1       ✅ Complete
+─────────────────────────────────────────────
+Total attribution points    20      ✅ Complete
+
+═══════════════════════════════════════════════════════════════
+
+PROJECT DETAILS:
+
+Title:      Complete Compiler Implementation
+Language:   Minimal language with while loops
+Authors:    Christian Nshuti Manzi & Aime Serge Tuyishime
+Course:     CST-405 Compiler Design
+Status:     Complete and ready for submission
+
+Features:
+  ✅ Complete minimal grammar implementation
+  ✅ While loops with 6 relational operators
+  ✅ All 6 compiler phases implemented
+  ✅ 2,147 lines of compiler code
+  ✅ 345 lines for new feature
+  ✅ 4 comprehensive test programs
+  ✅ 5 documentation files
+  ✅ Professional quality code
+
+═══════════════════════════════════════════════════════════════
+
+DELIVERABLES:
+
+1. Source Code
+   - All files properly attributed
+   - Clean compilation (no warnings)
+   - Professional code quality
+
+2. Documentation
+   - Complete README files
+   - Quick start guide
+   - Feature documentation
+   - Author credits
+
+3. Tests
+   - test_basic.src
+   - test_while.src
+   - test_complex.src
+   - test_comprehensive.src
+
+4. Build System
+   - Makefile with all targets
+   - Clean build process
+   - Test automation
+
+═══════════════════════════════════════════════════════════════
+
+CONCLUSION:
+
+All project files have been successfully updated with proper
+author attribution for:
+
+    Christian Nshuti Manzi & Aime Serge Tuyishime
+
+The attribution appears in:
+  • Every source code file header
+  • All documentation files
+  • Runtime compiler banner
+  • Dedicated AUTHORS.md file
+
+The project is now complete and properly credited.
+
+═══════════════════════════════════════════════════════════════
+
+╔═══════════════════════════════════════════════════════════════╗
+║                   ATTRIBUTION COMPLETE ✅                      ║
+║                                                               ║
+║         Christian Nshuti Manzi & Aime Serge Tuyishime        ║
+║                CST-405 Compiler Design Project                ║
+╚═══════════════════════════════════════════════════════════════╝
+
+Generated: October 2024

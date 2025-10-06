@@ -2,6 +2,10 @@
  * AST.H - Abstract Syntax Tree Header
  * CST-405 Compiler Project
  *
+ * Authors: Christian Nshuti Manzi & Aime Serge Tuyishime
+ * Course: CST-405 Compiler Design
+ * Project: Complete Compiler Implementation
+ *
  * This file defines the Abstract Syntax Tree structure used to represent
  * the parsed program in memory. Each node represents a language construct.
  */

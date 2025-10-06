@@ -2,6 +2,10 @@
  * COMPILER.C - Main Compiler Driver
  * CST-405 Complete Compiler Project
  *
+ * Authors: Christian Nshuti Manzi & Aime Serge Tuyishime
+ * Course: CST-405 Compiler Design
+ * Project: Complete Compiler Implementation
+ *
  * This is the main entry point for the complete compiler.
  * It orchestrates all compilation phases:
  *   1. Lexical Analysis (Scanning)
@@ -175,6 +179,8 @@ void print_banner() {
     printf("╔═══════════════════════════════════════════════════════════╗\n");
     printf("║                                                           ║\n");
     printf("║           CST-405 COMPLETE COMPILER SYSTEM                ║\n");
+    printf("║                                                           ║\n");
+    printf("║  Authors: Christian Nshuti Manzi & Aime Serge Tuyishime  ║\n");
     printf("║                                                           ║\n");
     printf("║  A full-featured compiler with lexer, parser, semantic   ║\n");
     printf("║  analyzer, intermediate code generator, and code gen.    ║\n");

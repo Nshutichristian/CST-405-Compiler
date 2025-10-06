@@ -1,5 +1,10 @@
 %{
 /* PARSER (SYNTAX ANALYZER) - CST-405 Compiler Project
+ *
+ * Authors: Christian Nshuti Manzi & Aime Serge Tuyishime
+ * Course: CST-405 Compiler Design
+ * Project: Complete Compiler Implementation
+ *
  * This parser implements syntax analysis for a simple programming language
  * with variable declarations, assignments, print statements, expressions,
  * and while loops (new feature).

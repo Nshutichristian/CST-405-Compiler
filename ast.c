@@ -2,6 +2,10 @@
  * AST.C - Abstract Syntax Tree Implementation
  * CST-405 Compiler Project
  *
+ * Authors: Christian Nshuti Manzi & Aime Serge Tuyishime
+ * Course: CST-405 Compiler Design
+ * Project: Complete Compiler Implementation
+ *
  * This file implements functions to create, manipulate, and display
  * the Abstract Syntax Tree (AST) that represents the program structure.
  */

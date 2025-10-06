@@ -2,6 +2,10 @@
  * SEMANTIC.H - Semantic Analyzer Header
  * CST-405 Compiler Project
  *
+ * Authors: Christian Nshuti Manzi & Aime Serge Tuyishime
+ * Course: CST-405 Compiler Design
+ * Project: Complete Compiler Implementation
+ *
  * This file defines the semantic analysis phase which performs:
  *   - Type checking
  *   - Variable declaration checking

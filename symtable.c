@@ -2,6 +2,10 @@
  * SYMTABLE.C - Symbol Table Implementation
  * CST-405 Compiler Project
  *
+ * Authors: Christian Nshuti Manzi & Aime Serge Tuyishime
+ * Course: CST-405 Compiler Design
+ * Project: Complete Compiler Implementation
+ *
  * This file implements a hash table-based symbol table for tracking
  * variables during compilation. Provides O(1) average-case lookup.
  */

@@ -2,6 +2,10 @@
  * CODEGEN.C - Code Generator Implementation
  * CST-405 Compiler Project
  *
+ * Authors: Christian Nshuti Manzi & Aime Serge Tuyishime
+ * Course: CST-405 Compiler Design
+ * Project: Complete Compiler Implementation
+ *
  * This file implements code generation from Three-Address Code (TAC)
  * to x86-64 assembly language. The generated code uses a simple
  * stack-based calling convention.

@@ -2,6 +2,10 @@
  * CODEGEN.H - Code Generator Header
  * CST-405 Compiler Project
  *
+ * Authors: Christian Nshuti Manzi & Aime Serge Tuyishime
+ * Course: CST-405 Compiler Design
+ * Project: Complete Compiler Implementation
+ *
  * This file defines the code generation phase which translates
  * Three-Address Code (TAC) into target assembly code (x86-64).
  */
