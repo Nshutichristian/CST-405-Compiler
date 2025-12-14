@@ -20,6 +20,7 @@ typedef enum {
     NODE_DECLARATION,       /* Variable declaration: int x; */
     NODE_ASSIGNMENT,        /* Assignment: x = expr; */
     NODE_PRINT,            /* Print statement: print(expr); */
+    NODE_READ,             /* Read statement: read(var); */
     NODE_WHILE,            /* While loop: while (cond) { stmts } */
     NODE_IF,               /* If statement: if (cond) { stmts } [else { stmts }] */
     NODE_FOR,              /* For loop: for (init; cond; update) { stmts } */
@@ -71,6 +72,11 @@ typedef struct ASTNode {
         struct {
             struct ASTNode* expr;
         } print;
+
+        /* For read statements */
+        struct {
+            char* var_name;
+        } read;
 
         /* For while loops (NEW FEATURE) */
         struct {
@@ -175,6 +181,9 @@ ASTNode* create_assignment_node(char* var_name, ASTNode* expr);
 
 /* Create a print node: print(expr); */
 ASTNode* create_print_node(ASTNode* expr);
+
+/* Create a read node: read(var); */
+ASTNode* create_read_node(char* var_name);
 
 /* Create a while loop node: while (cond) { body } (NEW FEATURE) */
 

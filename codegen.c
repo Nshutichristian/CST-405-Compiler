@@ -26,6 +26,7 @@ CodeGenerator* create_code_generator(const char* output_filename, SymbolTable* s
 
     gen->stack_offset = 0;
     gen->symtab = symtab;
+    gen->current_function = NULL;
 
     return gen;
 }
@@ -40,7 +41,10 @@ void gen_prologue(CodeGenerator* gen) {
 
     fprintf(gen->output_file, "section .data\n");
     fprintf(gen->output_file, "    ; Data section for constants\n");
-    fprintf(gen->output_file, "    fmt_int: db \"%%d\", 10, 0  ; Format string for printing integers\n\n");
+    fprintf(gen->output_file, "    fmt_int: db \"%%d\", 10, 0  ; Format string for printing integers\n");
+    fprintf(gen->output_file, "    fmt_scanf: db \"%%d\", 0  ; Format string for reading integers\n");
+    fprintf(gen->output_file, "    fmt_prompt: db \"Enter a number: \", 0  ; Prompt for input\n");
+    fprintf(gen->output_file, "    fmt_time: db \"Execution Time: %%ld clock ticks\", 10, 0  ; Format string for execution time\n\n");
 
     fprintf(gen->output_file, "section .bss\n");
     fprintf(gen->output_file, "    ; BSS section for uninitialized data\n");
@@ -73,22 +77,50 @@ void gen_prologue(CodeGenerator* gen) {
         fprintf(gen->output_file, "    t%d: resq 1\n", i);
     }
 
+    /* Performance measurement variables */
+    fprintf(gen->output_file, "\n    ; Performance measurement\n");
+    fprintf(gen->output_file, "    start_time: resq 1  ; Start time in clock ticks\n");
+    fprintf(gen->output_file, "    end_time: resq 1    ; End time in clock ticks\n");
+
     fprintf(gen->output_file, "\nsection .text\n");
     fprintf(gen->output_file, "    global main\n");
-    fprintf(gen->output_file, "    extern printf  ; External C library function\n\n");
+    fprintf(gen->output_file, "    extern printf  ; External C library function\n");
+    fprintf(gen->output_file, "    extern scanf   ; External C library function for input\n");
+    fprintf(gen->output_file, "    extern clock   ; External C library function for timing\n\n");
 
     fprintf(gen->output_file, "main:\n");
     fprintf(gen->output_file, "    ; Function prologue\n");
     fprintf(gen->output_file, "    push rbp\n");
-    fprintf(gen->output_file, "    mov rbp, rsp\n\n");
+    fprintf(gen->output_file, "    mov rbp, rsp\n");
+    fprintf(gen->output_file, "    sub rsp, 16    ; Align stack to 16 bytes\n\n");
+
+    fprintf(gen->output_file, "    ; Record start time for performance measurement\n");
+    fprintf(gen->output_file, "    call clock\n");
+    fprintf(gen->output_file, "    mov [start_time], rax\n\n");
 }
 
 /* Generate the assembly epilogue (program termination) */
 void gen_epilogue(CodeGenerator* gen) {
-    fprintf(gen->output_file, "\n    ; Function epilogue\n");
+    fprintf(gen->output_file, "\n.epilogue:\n");
+    fprintf(gen->output_file, "    ; Save return value\n");
+    fprintf(gen->output_file, "    push rax\n\n");
+
+    fprintf(gen->output_file, "    ; Record end time and calculate execution time\n");
+    fprintf(gen->output_file, "    call clock\n");
+    fprintf(gen->output_file, "    mov [end_time], rax\n");
+    fprintf(gen->output_file, "    mov rax, [end_time]\n");
+    fprintf(gen->output_file, "    sub rax, [start_time]  ; Calculate elapsed time\n\n");
+
+    fprintf(gen->output_file, "    ; Print execution time\n");
+    fprintf(gen->output_file, "    mov rdi, fmt_time      ; Load format string\n");
+    fprintf(gen->output_file, "    mov rsi, rax           ; Load elapsed time\n");
+    fprintf(gen->output_file, "    xor rax, rax           ; Clear AL (no vector registers used)\n");
+    fprintf(gen->output_file, "    call printf\n\n");
+
+    fprintf(gen->output_file, "    ; Restore return value and exit\n");
+    fprintf(gen->output_file, "    pop rax               ; Restore return value\n");
     fprintf(gen->output_file, "    mov rsp, rbp\n");
     fprintf(gen->output_file, "    pop rbp\n");
-    fprintf(gen->output_file, "    mov rax, 0    ; Return 0 (success)\n");
     fprintf(gen->output_file, "    ret\n");
 }
 
@@ -167,6 +199,22 @@ void gen_tac_instruction(CodeGenerator* gen, TACInstruction* inst) {
             fprintf(gen->output_file, "    call printf\n\n");
             break;
 
+        case TAC_READ:
+            /* Read: read(result) - read integer from user */
+            fprintf(gen->output_file, "    ; read(%s)\n", inst->result);
+
+            /* Print prompt */
+            fprintf(gen->output_file, "    mov rdi, fmt_prompt  ; Prompt message\n");
+            fprintf(gen->output_file, "    xor rax, rax         ; No vector registers used\n");
+            fprintf(gen->output_file, "    call printf\n");
+
+            /* Read input */
+            fprintf(gen->output_file, "    mov rdi, fmt_scanf  ; Format string\n");
+            fprintf(gen->output_file, "    lea rsi, [%s]       ; Address of variable to store input\n", inst->result);
+            fprintf(gen->output_file, "    xor rax, rax        ; No vector registers used\n");
+            fprintf(gen->output_file, "    call scanf\n\n");
+            break;
+
         case TAC_LABEL:
             /* Label: label: */
             fprintf(gen->output_file, "%s:\n", inst->label);
@@ -240,12 +288,19 @@ void gen_tac_instruction(CodeGenerator* gen, TACInstruction* inst) {
 
         case TAC_FUNCTION_LABEL:
             /* Function label: function_name: */
-            fprintf(gen->output_file, "\n; Function: %s\n", inst->label);
-            fprintf(gen->output_file, "%s:\n", inst->label);
-            fprintf(gen->output_file, "    ; Function prologue\n");
-            fprintf(gen->output_file, "    push rbp\n");
-            fprintf(gen->output_file, "    mov rbp, rsp\n");
-            fprintf(gen->output_file, "    sub rsp, 64       ; Reserve space for local variables\n\n");
+            /* Track current function for return handling */
+            if (gen->current_function) free(gen->current_function);
+            gen->current_function = strdup(inst->label);
+
+            /* Skip main function label as it's already defined in prologue */
+            if (strcmp(inst->label, "main") != 0) {
+                fprintf(gen->output_file, "\n; Function: %s\n", inst->label);
+                fprintf(gen->output_file, "%s:\n", inst->label);
+                fprintf(gen->output_file, "    ; Function prologue\n");
+                fprintf(gen->output_file, "    push rbp\n");
+                fprintf(gen->output_file, "    mov rbp, rsp\n");
+                fprintf(gen->output_file, "    sub rsp, 64       ; Reserve space for local variables\n\n");
+            }
             break;
 
         case TAC_PARAM:
@@ -291,9 +346,16 @@ void gen_tac_instruction(CodeGenerator* gen, TACInstruction* inst) {
             /* Return statement: return value */
             fprintf(gen->output_file, "    ; return %s\n", inst->op1);
             fprintf(gen->output_file, "    mov rax, [%s]     ; Load return value\n", inst->op1);
-            fprintf(gen->output_file, "    mov rsp, rbp      ; Function epilogue\n");
-            fprintf(gen->output_file, "    pop rbp\n");
-            fprintf(gen->output_file, "    ret\n\n");
+
+            /* For main function, jump to epilogue to run timing code */
+            /* For other functions, do normal return */
+            if (gen->current_function && strcmp(gen->current_function, "main") == 0) {
+                fprintf(gen->output_file, "    jmp .epilogue     ; Jump to epilogue for timing\n\n");
+            } else {
+                fprintf(gen->output_file, "    mov rsp, rbp      ; Function epilogue\n");
+                fprintf(gen->output_file, "    pop rbp\n");
+                fprintf(gen->output_file, "    ret\n\n");
+            }
             break;
 
         case TAC_RETURN_VOID:
@@ -338,6 +400,9 @@ void close_code_generator(CodeGenerator* gen) {
     if (gen) {
         if (gen->output_file) {
             fclose(gen->output_file);
+        }
+        if (gen->current_function) {
+            free(gen->current_function);
         }
         free(gen);
     }

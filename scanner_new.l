@@ -17,6 +17,8 @@ void update_location();
 %option nounput
 %option noinput
 
+%x COMMENT
+
 DIGIT       [0-9]
 LETTER      [a-zA-Z]
 ID          {LETTER}({LETTER}|{DIGIT}|_)*
@@ -29,6 +31,7 @@ WS          [ \t]
 "void"          { update_location(); yylval.str = strdup(yytext); return VOID; }
 "return"        { update_location(); yylval.str = strdup(yytext); return RETURN; }
 "print"         { update_location(); yylval.str = strdup(yytext); return PRINT; }
+"read"          { update_location(); yylval.str = strdup(yytext); return READ; }
 "for"           { update_location(); yylval.str = strdup(yytext); return FOR; }
 "do"            { update_location(); yylval.str = strdup(yytext); return DO; }
 "while"         { update_location(); yylval.str = strdup(yytext); return WHILE; }
@@ -60,6 +63,11 @@ WS          [ \t]
 "["             { update_location(); yylval.str = strdup(yytext); return LBRACKET; }
 "]"             { update_location(); yylval.str = strdup(yytext); return RBRACKET; }
 ","             { update_location(); yylval.str = strdup(yytext); return COMMA; }
+
+"/*"            { BEGIN(COMMENT); col_num += 2; char_count += 2; }
+<COMMENT>"*/"   { BEGIN(INITIAL); col_num += 2; char_count += 2; }
+<COMMENT>\n     { line_num++; col_num = 1; char_count++; }
+<COMMENT>.      { col_num++; char_count++; }
 
 "//".*          { col_num += yyleng; char_count += yyleng; }
 

@@ -281,6 +281,22 @@ void analyze_statement(ASTNode* node, SymbolTable* symtab) {
             break;
         }
 
+        case NODE_READ: {
+            /* Read statement: read(variable) */
+            char* var_name = node->data.read.var_name;
+
+            /* Check if variable is declared */
+            if (!check_declared(var_name, symtab, node->line_number)) {
+                semantic_error("Variable used before declaration", node->line_number);
+            } else {
+                /* Mark variable as initialized (reading into it initializes it) */
+                mark_initialized_in_scope(symtab, var_name, current_function_scope);
+            }
+
+            printf("[SEMANTIC] Read statement verified: read(%s)\n", var_name);
+            break;
+        }
+
         case NODE_WHILE: {
             /* While loop: while (condition) { body } */
             printf("[SEMANTIC] Analyzing while loop...\n");

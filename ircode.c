@@ -244,6 +244,15 @@ void gen_statement(ASTNode* node, TACCode* code) {
             break;
         }
 
+        case NODE_READ: {
+            /* Read statement: read(var) */
+            TACInstruction* inst = create_tac_instruction(TAC_READ,
+                                                          node->data.read.var_name,
+                                                          NULL, NULL, NULL);
+            append_tac(code, inst);
+            break;
+        }
+
         case NODE_WHILE: {
             /* While loop: while (condition) { body }
              *
@@ -639,6 +648,7 @@ const char* opcode_to_string(TACOpcode opcode) {
         case TAC_ASSIGN:     return "ASSIGN";
         case TAC_LOAD_CONST: return "LOAD_CONST";
         case TAC_PRINT:      return "PRINT";
+        case TAC_READ:       return "READ";
         case TAC_LABEL:      return "LABEL";
         case TAC_GOTO:       return "GOTO";
         case TAC_IF_FALSE:   return "IF_FALSE";
@@ -689,6 +699,10 @@ void print_tac(TACCode* code) {
 
             case TAC_PRINT:
                 printf(" %-10s %-10s\n", "-", current->op1);
+                break;
+
+            case TAC_READ:
+                printf(" %-10s\n", current->result);
                 break;
 
             case TAC_LABEL:

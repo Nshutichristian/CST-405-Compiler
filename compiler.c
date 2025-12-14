@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "ast.h"
 #include "symtable.h"
 #include "semantic.h"
@@ -41,6 +42,9 @@ void print_phase_separator(const char* phase_name);
 void print_summary(int success);
 
 int main(int argc, char* argv[]) {
+    /* Start performance tracking */
+    clock_t start_time = clock();
+
     /* Print compiler banner */
     print_banner();
 
@@ -261,6 +265,18 @@ int main(int argc, char* argv[]) {
      * FINAL DIAGNOSTICS
      * ================================================================ */
     print_diagnostic_summary();
+
+    /* ===================================================================
+     * PERFORMANCE METRICS
+     * ================================================================ */
+    clock_t end_time = clock();
+    double compilation_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
+
+    printf("+============================================================+\n");
+    printf("|                   PERFORMANCE METRICS                     |\n");
+    printf("+============================================================+\n");
+    printf("|  Compilation Time:     %.3f seconds                      |\n", compilation_time);
+    printf("+============================================================+\n\n");
 
     /* Cleanup */
     fclose(input_file);

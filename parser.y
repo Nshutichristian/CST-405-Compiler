@@ -62,6 +62,7 @@ int syntax_errors = 0;
 %token <num> NUM         /* Integer literal */
 %token <str> INT         /* Keyword: int */
 %token <str> PRINT       /* Keyword: print */
+%token <str> READ        /* Keyword: read */
 %token <str> WHILE       /* Keyword: while (NEW FEATURE) */
 %token <str> FOR          /* Keyword: for (NEW FEATURE) */
 %token <str> DO           /* Keyword: do (NEW FEATURE) */
@@ -98,9 +99,11 @@ int syntax_errors = 0;
 %type <node> param_list_non_empty
 %type <node> param
 %type <node> assignment
+%type <node> simple_assignment
 %type <node> for_stmt
 %type <node> do_while_stmt
 %type <node> print_stmt
+%type <node> read_stmt
 %type <node> while_stmt
 %type <node> if_stmt
 %type <node> return_stmt
@@ -188,6 +191,10 @@ statement:
     {
         $$ = $1;
     }
+    | read_stmt
+    {
+        $$ = $1;
+    }
     | while_stmt
     {
         $$ = $1;
@@ -254,12 +261,30 @@ assignment:
     }
     ;
 
+/* Simple assignment (no semicolon) - used in for loops */
+simple_assignment:
+    ID ASSIGN expression
+    {
+        $$ = create_assignment_node($1, $3);
+        printf("[PARSER] Simple assignment: %s = <expression>\n", $1);
+    }
+    ;
+
 /* Print statement: print(expression); */
 print_stmt:
     PRINT LPAREN expression RPAREN SEMICOLON
     {
         $$ = create_print_node($3);
         printf("[PARSER] Print statement: print(<expression>);\n");
+    }
+    ;
+
+/* Read statement: read(identifier); */
+read_stmt:
+    READ LPAREN ID RPAREN SEMICOLON
+    {
+        $$ = create_read_node($3);
+        printf("[PARSER] Read statement: read(%s);\n", $3);
     }
     ;
 
@@ -274,9 +299,9 @@ while_stmt:
 
 /* For loop: for (init; condition; update) { statement_list } */
 for_stmt:
-    FOR LPAREN assignment condition SEMICOLON assignment RPAREN LBRACE statement_list RBRACE
+    FOR LPAREN simple_assignment SEMICOLON condition SEMICOLON simple_assignment RPAREN LBRACE statement_list RBRACE
     {
-        $$ = create_for_node($3, $4, $6, $9);
+        $$ = create_for_node($3, $5, $7, $10);
         printf("[PARSER] For loop: for (<init>; <condition>; <update>) { <statements> }\n");
     }
     ;

@@ -60,6 +60,13 @@ ASTNode* create_print_node(ASTNode* expr) {
     return node;
 }
 
+/* Create a read statement node: read(var); */
+ASTNode* create_read_node(char* var_name) {
+    ASTNode* node = create_ast_node(NODE_READ);
+    node->data.read.var_name = strdup(var_name);
+    return node;
+}
+
 /* Create a while loop node: while (condition) { body } (NEW FEATURE) */
 ASTNode* create_while_node(ASTNode* condition, ASTNode* body) {
     ASTNode* node = create_ast_node(NODE_WHILE);
@@ -210,6 +217,7 @@ const char* node_type_to_string(NodeType type) {
         case NODE_DECLARATION:    return "DECLARATION";
         case NODE_ASSIGNMENT:     return "ASSIGNMENT";
         case NODE_PRINT:          return "PRINT";
+        case NODE_READ:           return "READ";
         case NODE_WHILE:          return "WHILE";
         case NODE_FOR:            return "FOR";
         case NODE_DO_WHILE:       return "DO_WHILE";
@@ -267,6 +275,10 @@ void print_ast(ASTNode* node, int indent) {
         case NODE_PRINT:
             printf("PRINT (line %d)\n", node->line_number);
             print_ast(node->data.print.expr, indent + 1);
+            break;
+
+        case NODE_READ:
+            printf("READ: %s (line %d)\n", node->data.read.var_name, node->line_number);
             break;
 
         case NODE_WHILE:
@@ -438,6 +450,10 @@ void free_ast(ASTNode* node) {
 
         case NODE_PRINT:
             free_ast(node->data.print.expr);
+            break;
+
+        case NODE_READ:
+            free(node->data.read.var_name);
             break;
 
         case NODE_WHILE:

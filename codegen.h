@@ -20,6 +20,7 @@ typedef struct {
     FILE* output_file;          /* File to write assembly code to */
     int stack_offset;           /* Current stack frame offset */
     SymbolTable* symtab;        /* Symbol table for variable locations */
+    char* current_function;     /* Name of current function being generated */
 } CodeGenerator;
 
 /* CODE GENERATION FUNCTIONS */

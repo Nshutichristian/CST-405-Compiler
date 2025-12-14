@@ -436,15 +436,15 @@ TACCode* optimize_tac(TACCode* original_code, OptimizationStats* stats) {
         stats->constant_folds += cf;
         total_opts += cf;
 
+        /* Peephole optimization (before copy propagation to avoid dangling references) */
+        int po = peephole_optimization(original_code);
+        stats->peephole_opts += po;
+        total_opts += po;
+
         /* Copy propagation */
         int cp = copy_propagation(original_code);
         stats->copy_propagations += cp;
         total_opts += cp;
-
-        /* Peephole optimization */
-        int po = peephole_optimization(original_code);
-        stats->peephole_opts += po;
-        total_opts += po;
 
         /* Flow optimization */
         int fo = flow_optimization(original_code);

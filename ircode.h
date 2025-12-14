@@ -30,6 +30,7 @@ typedef enum {
     TAC_ASSIGN,        /* result = op1 (copy) */
     TAC_LOAD_CONST,    /* result = constant */
     TAC_PRINT,         /* print(op1) */
+    TAC_READ,          /* read(result) - read into variable */
     TAC_LABEL,         /* label: (for control flow) */
     TAC_GOTO,          /* goto label (unconditional jump) */
     TAC_IF_FALSE,      /* if_false op1 goto label (conditional jump) */
